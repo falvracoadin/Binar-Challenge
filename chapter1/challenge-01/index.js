@@ -28,7 +28,7 @@ async function mulaiKalkulator(isCalculatorOn){
             1. Melakukan kalkulasi aritmatik
             2. Melakukan kalkulasi luas persegi
             3. Melakukan kalkulasi volume kubus
-            4. Melakukan kalkulasi tabung
+            4. Melakukan kalkulasi volume tabung
             5. Matikan kalkulator
         `);
         await kalkulator();
@@ -149,9 +149,9 @@ function kalkulator(){
                     getInput('Masukkan jari-jari tabung : ', () => {
                         data.jari = data.input;
                         getInput('Masukkan tinggi tabung : ', () => {
-                            console.log('V = Pi x r x t');
-                            console.log(`V = ${Math.PI} x ${data.jari} x ${data.input}`);
-                            console.log(`V = ${data.ans = Math.PI * data.jari * data.input}`);
+                            console.log('V = Pi x r x r x t');
+                            console.log(`V = ${Math.PI} x ${data.jari} x ${data.jari} x ${data.input}`);
+                            console.log(`V = ${data.ans = Math.PI * data.jari * data.jari * data.input}`);
                             resolve();
                         })
                     });
