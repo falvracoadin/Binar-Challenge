@@ -1,0 +1,13 @@
+Algoritma program
+
+1. Mulai program
+2. Menginputkan nilai siswa
+3. Menyimpan nilai inputan ke dalam array untuk setiap input yang berupa angka atau number
+4. Jika input berupa karakter 'q' maka hentikan input dalam konsol.
+5. Jika input tidak bertipe data number dan bukan karakter 'q' maka ulangi inputan.
+6. Mencari nilai tertinggi dengan memanggil fungsi cariNilaiMaksimum()
+7. Mencari nllai terendah dengan memanggil fungsi cariNilaiMinimum()
+8. Menghitung rata-rata dengan memanggil fungsi rataRata()
+9. Menghitung jumlah siswa yang lulus dan tidak lulus dengan memanggil fungsi filterSiswa()
+10. Urutkan data dari terendah ke tertinggi dengan memanggil fungsi mergeSort()
+11. Menampilkan hasil nilai tertinggi, nilai terendah, rata-rata, jumlah siswa lulus dan tidak lulus serta urutan data dari terkecil ke terbesar.
