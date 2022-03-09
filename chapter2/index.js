@@ -7,21 +7,6 @@ let program = new programImport.Program();
 //mencari min, mencari rerata, memfilter siswa, dan mengurutkan nilai
 
 
-// program.mulai().then(function() {
-    
-//     //menyimpan nilai max
-//     program.max = program.cariNilaiMaksimum();
-//     //menyimpan nilai min
-//     program.min = program.cariNilaiMinimum();
-//     //menyimpan rerata
-//     program.rerata = program.rataRata();
-//     //menyimpan filter data siswa
-//     program.filter = program.filterSiswa();
-//     //mengurutkan data
-//     program.urutanData = program.urutkan();
-//     //mengakhiri program, dan mencetak hasil yang didapatkan
-//     program.selesai();
-// });
 
 program.mulai().then(() => {
     const max = Statistik.cariNilaiMaksismum(program.getData());
