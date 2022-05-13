@@ -1,0 +1,1413 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Berikut adalah dokumentasi api dari tugas pada chapter 4. Api ini bertujuan untuk operasi CRUD pada tabel user, history, dan biodata. Api dari service ini hanya ada untuk versi 1.",
+    "version": "1.0.0",
+    "title": "User Game Api",
+    "contact": {
+      "email": "m.rosyidaminuddin@gmail.com"
+    }
+  },
+  "host": "127.0.0.1:3000",
+  "basePath": "/api/v1",
+  "tags": [
+    {
+      "name": "user",
+      "description": "Data mengenai username dan password user"
+    },
+    {
+      "name": "history",
+      "description": "Data riwayat permainan user"
+    },
+    {
+      "name": "biodata",
+      "description": "Biodata dari user"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/user": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Mengambil semua data user",
+        "description": "Mengambil semua data user yang tersimpan dalam database",
+        "operationId": "getAllUser",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Berhasil mendapatkan semua data user dari server",
+            "schema": {
+              "$ref": "#/definitions/allUserResponse"
+            }
+          },
+          "500": {
+            "description": "Gagal mendapatkan semua data user dari server",
+            "schema": {
+              "$ref": "#/definitions/serverError"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Membuat data user baru",
+        "description": "Membuat data user baru yang berisi username dan password",
+        "operationId": "createUser",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Data yang harus mengandung username dan password",
+            "schema": {
+              "$ref": "#/definitions/createUser"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Berhasil membuat data user baru di database server",
+            "schema": {
+              "$ref": "#/definitions/userCreatedResponse"
+            }
+          },
+          "400": {
+            "description": "Username dan password tidak boleh kosong",
+            "schema": {
+              "$ref": "#/definitions/usernameAndPasswordRequiredResponse"
+            }
+          },
+          "500": {
+            "description": "Username dari akun yang akan dibuat telah digunakan",
+            "schema": {
+              "$ref": "#/definitions/usernameHasBeenUsedResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/{userId}": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Mengambil detail user tertentu",
+        "description": "Menagmbil detail user berdasarkan id melalui parameter url",
+        "operationId": "detailUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID dari user",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Berhasil mendapatkan data user dengan id tertentu",
+            "schema": {
+              "$ref": "#/definitions/detailUserResponse"
+            }
+          },
+          "404": {
+            "description": "Gagal mendapatkan user dengan id tertentu",
+            "schema": {
+              "$ref": "#/definitions/detailUserFailed"
+            }
+          },
+          "500": {
+            "description": "Terjadi kesalahan server",
+            "schema": {
+              "$ref": "#/definitions/serverError"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Mengupdate data user tertentu",
+        "description": "Mengupdate data user berdasarkan id user",
+        "operationId": "updateUser",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Data yang mengandung username atau password",
+            "schema": {
+              "$ref": "#/definitions/createUser"
+            }
+          },
+          {
+            "name": "userId",
+            "type": "integer",
+            "in": "path",
+            "description": "user id yang akan diupdate",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Berhasil mengupdate user di database server",
+            "schema": {
+              "$ref": "#/definitions/userUpdatedResponse"
+            }
+          },
+          "400": {
+            "description": "Gagal mengupdate user karena tidak ada data username",
+            "schema": {
+              "$ref": "#/definitions/usernameRequiredResponse"
+            }
+          },
+          "404": {
+            "description": "Gagal mengupdate user karena data user tidak ditemukan",
+            "schema": {
+              "$ref": "#/definitions/userNotFoundResponse"
+            }
+          },
+          "500": {
+            "description": "Gagal mengupdate user karena masalah server",
+            "schema": {
+              "$ref": "#/definitions/serverError"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Menghapus data user",
+        "description": "menghapus data user berdasarkan id user tertentu",
+        "operationId": "deleteUser",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "type": "integer",
+            "in": "path",
+            "description": "user id yang akan dihapus",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Berhasil menghapus user",
+            "schema": {
+              "$ref": "#/definitions/userDeletedResponse"
+            }
+          },
+          "404": {
+            "description": "Data user yang diupdate tidak ditemukan",
+            "schema": {
+              "$ref": "#/definitions/userNotFoundResponse"
+            }
+          },
+          "500": {
+            "description": "Gagal menghapus user karena masalah server",
+            "schema": {
+              "$ref": "#/definitions/serverError"
+            }
+          }
+        }
+      }
+    },
+    "/history": {
+      "get": {
+        "tags": [
+          "history"
+        ],
+        "summary": "Megambil semua data history",
+        "description": "Mengambil semua data history yang tersimpan dalam database",
+        "operationId": "getAllHistory",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Berhasil mendapatkan semua data history dari server",
+            "schema": {
+              "$ref": "#/definitions/allHistoryResponse"
+            }
+          },
+          "500": {
+            "description": "Gagal mendapatkan semua data history karena kesalahan server",
+            "schema": {
+              "$ref": "#/definitions/simpleServerError"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "history"
+        ],
+        "summary": "Membuat data history baru",
+        "description": "Membuat data history baru yang berisi user_game_id dan score",
+        "operationId": "createHistory",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Data yang harus mengandung user_game_id dan score",
+            "schema": {
+              "$ref": "#/definitions/createHistory"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Berhasil membuat history baru di database server dengan id user tertentu",
+            "schema": {
+              "$ref": "#/definitions/historyCreatedResponse"
+            }
+          },
+          "500": {
+            "description": "Gagal membuat history karena kesalahan server",
+            "schema": {
+              "$ref": "#/definitions/simpleServerError"
+            }
+          }
+        }
+      }
+    },
+    "/history/{historyId}": {
+      "get": {
+        "tags": [
+          "history"
+        ],
+        "summary": "Mengambil data history tertentu",
+        "description": "Mengambil data history berdasarkan id history tertentu",
+        "operationId": "detailHistory",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "historyId",
+            "type": "integer",
+            "in": "path",
+            "description": "Id history yang ingin didapatkan detailnya",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Berhasil mengambil data history dengan id tertentu",
+            "schema": {
+              "$ref": "#/definitions/detailHistoryResponse"
+            }
+          },
+          "404": {
+            "description": "History tidak ditemukan",
+            "schema": {
+              "$ref": "#/definitions/historyNotFound"
+            }
+          },
+          "500": {
+            "description": "Kesalahan server",
+            "schema": {
+              "$ref": "#/definitions/simpleServerError"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "history"
+        ],
+        "summary": "Mengupdate data history tertentu",
+        "description": "Mengupdate data history berdasarkan id history tertentu",
+        "operationId": "updateHistory",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "historyId",
+            "type": "integer",
+            "in": "path",
+            "description": "id History yang ingin diupdate",
+            "required": true
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Data yang mengandung user_game_id dan score",
+            "schema": {
+              "$ref": "#/definitions/createHistory"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Berhasil mengupdate history",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "updated": {
+                      "type": "integer",
+                      "example": "1"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Gagal mengupdate history",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "fail"
+                },
+                "error": {
+                  "type": "string",
+                  "example": "Failed to update history with id 1 for user adinaelah"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "history"
+        ],
+        "summary": "Menghapus data history tertentu",
+        "description": "menghapus data history berdasarkan id history tertentu",
+        "operationId": "deleteHistory",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "historyId",
+            "type": "integer",
+            "in": "path",
+            "description": "id History yang ingin diupdate",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "berhasil menghapus history",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "deleted": {
+                      "type": "integer",
+                      "example": "1"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "gagal menghapus history",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "fail"
+                },
+                "error": {
+                  "type": "string",
+                  "example": "failed to delete history with id 1"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/biodata": {
+      "get": {
+        "tags": [
+          "biodata"
+        ],
+        "summary": "Mengambil semua data biodata",
+        "description": "Mengambil semua data biodata yang tersimpan dalam database",
+        "operationId": "getAllBiodata",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Berhasil mendapatkan semua data biodata dari server",
+            "schema": {
+              "$ref": "#/definitions/allBiodataResponse"
+            }
+          },
+          "500": {
+            "description": "Gagal mendapatkan semua biodata dari server",
+            "schema": {
+              "$ref": "#/definitions/serverError"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "biodata"
+        ],
+        "summary": "Membuat data biodata",
+        "description": "Membuat data biodata baru",
+        "operationId": "createBiodata",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Data yang harus mengandung user_id, age, address, dan description",
+            "schema": {
+              "$ref": "#/definitions/createHistory"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Berhasil membuat biodata baru",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "example": "1"
+                },
+                "age": {
+                  "type": "integer",
+                  "example": "22"
+                },
+                "address": {
+                  "type": "string",
+                  "example": "Dsn. Purboyo Mayang Sekar"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "Orang ansos dan introvert"
+                },
+                "user_game_id": {
+                  "type": "integer",
+                  "example": "1"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "example": "2022-04-11T01:04:52.067Z"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "example": "2022-04-11T01:04:52.067Z"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Gagal membuat biodata dari server",
+            "schema": {
+              "$ref": "#/definitions/serverError"
+            }
+          }
+        }
+      }
+    },
+    "/biodata/{id}": {
+      "get": {
+        "tags": [
+          "biodata"
+        ],
+        "summary": "Mengambil data biodata tertentu",
+        "description": "Mengambil data biodata berdasarkan id biodata tertentu",
+        "operationId": "detailBiodata",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "type": "integer",
+            "in": "path",
+            "description": "Id biodata yang ingin didapatkan detailnya",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Berhasil mengambil data biodata dengan id tertentu",
+            "schema": {
+              "$ref": "#/definitions/detailHistoryResponse"
+            }
+          },
+          "404": {
+            "description": "History tidak ditemukan",
+            "schema": {
+              "$ref": "#/definitions/historyNotFound"
+            }
+          },
+          "500": {
+            "description": "Kesalahan server",
+            "schema": {
+              "$ref": "#/definitions/simpleServerError"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "biodata"
+        ],
+        "summary": "Mengupdate data biodata tertentu",
+        "description": "Mengupdate data biodata berdasarkan id biodata tertentu",
+        "operationId": "id",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "type": "integer",
+            "in": "path",
+            "description": "id biodata yang ingin diupdate",
+            "required": true
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Data yang akan diupdate pada biodata",
+            "schema": {
+              "$ref": "#/definitions/createHistory"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Berhasil mengupdate biodata",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "updated": {
+                      "type": "integer",
+                      "example": "1"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Gagal mengupdate biodata",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "fail"
+                },
+                "error": {
+                  "type": "string",
+                  "example": "Failed to update biodata with id 1 for user adinaelah"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "biodata"
+        ],
+        "summary": "Menghapus data biodata tertentu",
+        "description": "menghapus data biodata berdasarkan id biodata tertentu",
+        "operationId": "deleteBiodata",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "type": "integer",
+            "in": "path",
+            "description": "id biodata yang ingin diupdate",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "berhasil menghapus biodata",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "deleted": {
+                      "type": "integer",
+                      "example": "1"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "gagal menghapus biodata",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "fail"
+                },
+                "error": {
+                  "type": "string",
+                  "example": "failed to delete biodata with id 1"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "allBiodataResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "success"
+        },
+        "message": {
+          "type": "string",
+          "example": "Successfully retrive all biodata"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "biodatas": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "example": "1"
+                  },
+                  "age": {
+                    "type": "integer",
+                    "example": "22"
+                  },
+                  "address": {
+                    "type": "string",
+                    "example": "Dsn. Purboyo Mayang Sekar"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Orang ansos dan introvert"
+                  },
+                  "user_game_id": {
+                    "type": "integer",
+                    "example": "1"
+                  },
+                  "createdAt": {
+                    "type": "string",
+                    "example": "2022-04-11T01:04:52.067Z"
+                  },
+                  "updatedAt": {
+                    "type": "string",
+                    "example": "2022-04-11T01:04:52.067Z"
+                  },
+                  "user": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                      },
+                      "username": {
+                        "type": "string",
+                        "example": "adinaelah"
+                      },
+                      "password": {
+                        "type": "string",
+                        "example": "123456"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "example": "2022-04-11T00:44:32.828Z"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "example": "2022-04-11T00:44:32.828Z"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "allHistoryResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "success"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "histories": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "example": "1"
+                  },
+                  "score": {
+                    "type": "integer",
+                    "example": "900"
+                  },
+                  "user_game_id": {
+                    "type": "integer",
+                    "example": "1"
+                  },
+                  "createdAt": {
+                    "type": "string",
+                    "example": "2022-04-22T07:23:54.044Z"
+                  },
+                  "updatedAt": {
+                    "type": "string",
+                    "example": "2022-04-22T07:23:54.044Z"
+                  },
+                  "user": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "example": "1"
+                      },
+                      "username": {
+                        "type": "string",
+                        "example": "adinaelah"
+                      },
+                      "password": {
+                        "type": "string",
+                        "example": "q1a2z3"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "example": "2022-04-11T00:43:13.463Z"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "example": "2022-04-11T00:43:13.463Z"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "detailHistoryResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "success"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "history": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "example": "1"
+                },
+                "score": {
+                  "type": "integer",
+                  "example": "900"
+                },
+                "user_game_id": {
+                  "type": "integer",
+                  "example": "1"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "example": "2022-04-22T07:23:54.044Z"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "example": "2022-04-22T07:23:54.044Z"
+                },
+                "user": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "example": "1"
+                    },
+                    "username": {
+                      "type": "string",
+                      "example": "adinaelah"
+                    },
+                    "password": {
+                      "type": "string",
+                      "example": "q1a2z3"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "example": "2022-04-11T00:43:13.463Z"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "example": "2022-04-11T00:43:13.463Z"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "historyCreatedResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "success"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "history": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "example": "1"
+                },
+                "score": {
+                  "type": "integer",
+                  "example": "900"
+                },
+                "user_game_id": {
+                  "type": "integer",
+                  "example": "1"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "example": "2022-04-22T15:54:11.703Z"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "example": "2022-04-22T15:54:11.703Z"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "createHistory": {
+      "type": "object",
+      "properties": {
+        "user_game_id": {
+          "type": "integer",
+          "example": "1"
+        },
+        "score": {
+          "type": "integer",
+          "example": "900"
+        }
+      }
+    },
+    "createUser": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string",
+          "example": "adinaelah"
+        },
+        "password": {
+          "type": "string",
+          "example": "lq1a2z3x4"
+        }
+      }
+    },
+    "userUpdatedResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "success"
+        },
+        "message": {
+          "type": "string",
+          "example": "Successfully update user"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "updated": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "example": "1"
+              }
+            }
+          }
+        }
+      }
+    },
+    "usernameRequiredResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "fail"
+        },
+        "message": {
+          "type": "string",
+          "example": "failed to update user"
+        },
+        "error": {
+          "type": "string",
+          "example": "username is required"
+        }
+      }
+    },
+    "userNotFoundResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "fail"
+        },
+        "message": {
+          "type": "string",
+          "example": "failed to update user"
+        },
+        "error": {
+          "type": "string",
+          "example": "user not found"
+        }
+      }
+    },
+    "historyNotFound": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "fail"
+        },
+        "error": {
+          "type": "string",
+          "example": "user not found"
+        }
+      }
+    },
+    "userDeletedResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "success"
+        },
+        "message": {
+          "type": "string",
+          "example": "successfully delete user"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "deleted": {
+              "type": "integer",
+              "example": "1"
+            }
+          }
+        }
+      }
+    },
+    "userCreatedResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "success"
+        },
+        "message": {
+          "type": "string",
+          "example": "successfully create user"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "user": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "example": "1"
+                },
+                "username": {
+                  "type": "string",
+                  "example": "adinaelah"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "q1a2z3x4"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "example": "2022-04-22T10:20:58.146Z"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "example": "2022-04-22T10:20:58.146Z"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "usernameAndPasswordRequiredResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "fail"
+        },
+        "message": {
+          "type": "string",
+          "example": "Fail to create user"
+        },
+        "error": {
+          "type": "string",
+          "example": "username and password required!"
+        }
+      }
+    },
+    "usernameHasBeenUsedResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "fail"
+        },
+        "message": {
+          "type": "string",
+          "example": "Fail to create User"
+        },
+        "error": {
+          "type": "string",
+          "example": "username adinaelah have been used!"
+        }
+      }
+    },
+    "allUserResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "success"
+        },
+        "message": {
+          "type": "string",
+          "example": "successfully get all user data"
+        },
+        "data": {
+          "$ref": "#/definitions/allUser"
+        }
+      }
+    },
+    "serverError": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "fail"
+        },
+        "message": {
+          "type": "string",
+          "example": "Fail to process"
+        },
+        "error": {
+          "type": "string",
+          "example": "Internal server error"
+        }
+      }
+    },
+    "simpleServerError": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "fail"
+        },
+        "error": {
+          "type": "string",
+          "example": "Internal server error"
+        }
+      }
+    },
+    "allUser": {
+      "type": "object",
+      "properties": {
+        "users": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/detailUser"
+          }
+        }
+      }
+    },
+    "detailUserResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "success"
+        },
+        "message": {
+          "type": "string",
+          "example": "Successfully retrive user with id 1"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "user": {
+              "$ref": "#/definitions/detailUser"
+            }
+          }
+        }
+      }
+    },
+    "detailUserFailed": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "fail"
+        },
+        "message": {
+          "type": "string",
+          "example": "Fail to get user"
+        },
+        "error": {
+          "type": "string",
+          "example": "user with id 5 doesnt exist"
+        }
+      }
+    },
+    "detailUser": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "example": 1
+        },
+        "username": {
+          "type": "string",
+          "example": "adinaelah"
+        },
+        "password": {
+          "type": "string",
+          "example": "123456"
+        },
+        "createdAt": {
+          "type": "string",
+          "example": "2022-04-11T00:44:32.828Z"
+        },
+        "updatedAt": {
+          "type": "string",
+          "example": "2022-04-11T00:44:32.828Z"
+        },
+        "biodata": {
+          "$ref": "#/definitions/detailBiodata"
+        },
+        "history": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/detailHistory"
+          }
+        }
+      }
+    },
+    "detailBiodata": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "example": "1"
+        },
+        "age": {
+          "type": "integer",
+          "example": "22"
+        },
+        "address": {
+          "type": "string",
+          "example": "Dsn. Purboyo Mayang Sekar"
+        },
+        "description": {
+          "type": "string",
+          "example": "Orang ansos dan introvert"
+        },
+        "user_game_id": {
+          "type": "integer",
+          "example": "1"
+        },
+        "createdAt": {
+          "type": "string",
+          "example": "2022-04-11T01:04:52.067Z"
+        },
+        "updatedAt": {
+          "type": "string",
+          "example": "2022-04-11T01:04:52.067Z"
+        }
+      }
+    },
+    "detailHistory": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "example": "1"
+        },
+        "score": {
+          "type": "integer",
+          "example": "900"
+        },
+        "user_game_id": {
+          "type": "integer",
+          "example": "1"
+        },
+        "createdAt": {
+          "type": "string",
+          "example": "2022-04-22T07:23:54.044Z"
+        },
+        "updatedAt": {
+          "type": "string",
+          "example": "2022-04-22T07:23:54.044Z"
+        }
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Visit github",
+    "url": "https://github.com/falvracoadin/Binar-Challenge.git"
+  }
+}

@@ -17,7 +17,7 @@ const getAllUser = async (req, res) => {
         res.status(500).json({
             status: "fail",
             message: "Fail to get all user",
-            error,
+            error : error.message,
           });
     }
 }
@@ -33,7 +33,7 @@ const getUser = async (req, res) => {
             include : ['biodata', 'history']
         });
 
-        if(! user) throw `user with id ${id} doesnt exist`;
+        if(! user) throw Error(`user with id ${id} doesnt exist`);
 
         return res.status(200).json({
             status : 'success',
@@ -46,7 +46,7 @@ const getUser = async (req, res) => {
         res.status(500).json({
             status: "fail",
             message: "Fail to get user",
-            error,
+            error: error.message,
           });
     }
 }
@@ -55,12 +55,19 @@ const createUser = async (req, res) => {
     try {
         const {username, password} = req.body;
 
+        if(!username || !password) 
+            return res.status(400).json({
+                status: 'fail',
+                message: 'fail to create user',
+                error : "username and password required!"
+            });
+
         let user = await User.findOne({
             where : {
                 username
             }
         });
-        if(user) throw `username ${username} have been used!`;
+        if(user) throw Error(`username ${username} have been used!`);
 
         user = await User.create({
             username : username,
@@ -79,7 +86,7 @@ const createUser = async (req, res) => {
         res.status(500).json({
             status: "fail",
             message: "Fail to create user",
-            error,
+            error : error.message,
           });
     }
 }
@@ -89,11 +96,25 @@ const updateUser = async (req, res) => {
         const id = req.params.id;
         const {username, password} = req.body;
 
+        if(!username){
+            return res.status(400).json({
+                status: "fail",
+                message: "failed to update User",
+                error: "username is required"
+            });
+        }
+
         let user = await User.findOne({
             where : {id}
         });
 
-        if(! user) throw `user not found for user id ${id}`;
+        if(! user){
+            return res.status(404).json({
+                status : "fail",
+                message: "failed to update user",
+                error: "user not found"
+            });
+        }
 
         user = await User.findOne({
             where : {
@@ -101,7 +122,7 @@ const updateUser = async (req, res) => {
             }
         });
 
-        if(user && user.id != id) throw  `username ${username} have been used`;
+        if(user && user.id != id) throw  Error(`username ${username} have been used`);
 
         const updated = await User.update({
             username, password
@@ -111,7 +132,7 @@ const updateUser = async (req, res) => {
             }
         });
 
-        if(! updated) throw `failed to update user`;
+        if(! updated) throw Error(`failed to update user`);
 
         return res.status(200).json({
             status : 'success',
@@ -124,7 +145,7 @@ const updateUser = async (req, res) => {
         res.status(500).json({
             status: "fail",
             message: "Fail to update user",
-            error,
+            error : error.message,
           });
     }
 }
@@ -139,7 +160,13 @@ const deleteUser = async (req, res) => {
             }
         });
 
-        if(! deleted) throw `user not found for id : ${id}`;
+        if(! deleted){
+            return res.status(404).json({
+                status: "fail",
+                message: "fail to delete user",
+                error: "user not found"
+            });
+        }
 
         return res.status(200).json({
             status : 'success',
@@ -152,7 +179,7 @@ const deleteUser = async (req, res) => {
         res.status(500).json({
             status: "fail",
             message: "Fail to delete user",
-            error,
+            error : error.message,
           });
     }
 }

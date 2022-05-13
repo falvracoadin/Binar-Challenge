@@ -3,7 +3,7 @@ const { Biodata, User } = require("../../../models");
 //get all biodata
 const getAllBiodata = async (req, res) => {
   try {
-    const biodatas = await Biodata.findAll({include : 'user'}); 
+    const biodatas = await Biodata.findAll({ include: "user" });
     res.status(200).json({
       status: "success",
       message: "Successfully retrive all biodata",
@@ -14,8 +14,8 @@ const getAllBiodata = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       status: "fail",
-      message: "Fail to retrieve all biodata",
-      error: error,
+      message: "Fail to process",
+      error: error.message,
     });
   }
 };
@@ -26,13 +26,13 @@ const getBiodata = async (req, res) => {
     const id = req.params.biodataId;
 
     const biodata = await Biodata.findOne({
-        where : {
-            id
-        },
-        include : 'user'
+      where: {
+        id,
+      },
+      include: "user",
     });
 
-    if(!biodata) throw `biodata with id ${id} doesnt exist`;
+    if (!biodata) throw Error(`biodata with id ${id} doesnt exist`);
 
     return res.status(200).json({
       status: "success",
@@ -45,7 +45,7 @@ const getBiodata = async (req, res) => {
     res.status(500).json({
       status: "fail",
       message: "Fail to retrieve biodata",
-      error: error,
+      error: error.message,
     });
   }
 };
@@ -54,25 +54,27 @@ const getBiodata = async (req, res) => {
 const createBiodata = async (req, res) => {
   try {
     const { age, address, description, user_game_id } = req.body;
-    
-    if(isNaN(age)) throw "age must be number"; //validasi umur harus number
-    else if(! user_game_id) throw "user_game_id required"; //validasi user_game_id wajib ada
+
+    if (isNaN(age))
+      throw Error("age must be number"); //validasi umur harus number
+    else if (!user_game_id) throw Error("user_game_id required"); //validasi user_game_id wajib ada
 
     //validasi usernya ada apa nggak
     const user = await User.findOne({
-        where : {
-            id : user_game_id
-        }
+      where: {
+        id: user_game_id,
+      },
     });
-    if(! user) throw `user with id ${user_game_id} doesnt exist`; 
+    if (!user) throw Error(`user with id ${user_game_id} doesnt exist`);
 
     //validasi biodatanya udah ada apa belum
     const biodata = await Biodata.findOne({
-        where : {
-            user_game_id
-        }
+      where: {
+        user_game_id,
+      },
     });
-    if(biodata) throw `biodata already exists for user id ${user.username}`;
+    if (biodata)
+      throw Error(`biodata already exists for user id ${user.username}`);
 
     const newBiodata = await Biodata.create({
       age,
@@ -92,7 +94,7 @@ const createBiodata = async (req, res) => {
     res.status(500).json({
       status: "fail",
       message: "Fail to create biodata",
-      error: error,
+      error: error.message,
     });
   }
 };
@@ -102,26 +104,29 @@ const updateBiodata = async (req, res) => {
   try {
     const id = req.params.biodataId;
     const { age, address, description, user_game_id } = req.body;
-    
-    if(isNaN(age)) throw "age must be number";
-    else if(! user_game_id) throw "user_game_id required";  
-    
+
+    if (isNaN(age)) throw Error("age must be number");
+    else if (!user_game_id) throw Error("user_game_id required");
+
     const user = await User.findOne({
-        where : {
-            id : user_game_id
-        }
+      where: {
+        id: user_game_id,
+      },
     });
-    
-    if(! user) throw `user with id ${user_game_id} doesnt exist`;
+
+    if (!user) throw Error(`user with id ${user_game_id} doesnt exist`);
 
     const biodata = await Biodata.findOne({
-        where : {
-            id,
-            user_game_id
-        }
+      where: {
+        id,
+        user_game_id,
+      },
     });
 
-    if(!biodata) throw `biodata for user ${user.username} doesnt exist with biodata id ${id}`;
+    if (!biodata)
+      throw Error(
+        `biodata for user ${user.username} doesnt exist with biodata id ${id}`
+      );
 
     //update biodata dengan id = id, dan user_game_id = user_game_id
     const updated = await Biodata.update(
@@ -133,18 +138,16 @@ const updateBiodata = async (req, res) => {
       },
       {
         where: {
-          id
+          id,
         },
       }
     );
 
-    if (updated == 0) throw "failed to update biodata";
+    if (updated == 0) throw Error("failed to update biodata");
 
     return res.status(200).json({
       status: "success",
-      message:
-        "successfuly updated biodata for user : " +
-        user.username,
+      message: "successfuly updated biodata for user : " + user.username,
       data: {
         updated,
       },
@@ -153,7 +156,7 @@ const updateBiodata = async (req, res) => {
     res.status(500).json({
       status: "fail",
       message: "Fail to update biodata",
-      error,
+      error: error.message,
     });
   }
 };
@@ -168,7 +171,7 @@ const deleteBiodata = async (req, res) => {
       },
     });
 
-    if (deleted == 0) throw `failed to delete biodata with id ${id}`;
+    if (deleted == 0) throw Error(`failed to delete biodata with id ${id}`);
 
     return res.status(200).json({
       status: "success",
@@ -181,7 +184,7 @@ const deleteBiodata = async (req, res) => {
     res.status(500).json({
       status: "fail",
       message: "Fail to delete biodata",
-      error,
+      error: error.message,
     });
   }
 };

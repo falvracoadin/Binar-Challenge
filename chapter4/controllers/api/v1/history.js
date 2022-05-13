@@ -13,7 +13,7 @@ const getAllHistory = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       status: "fail",
-      error,
+      error : error.message,
     });
   }
 };
@@ -27,7 +27,7 @@ const getHistory = async(req, res) => {
             include : "user"
         });
 
-        if(! history) throw 'no history with id ' + id;
+        if(! history) throw Error('no history with id ' + id);
 
         return res.status(200).json({
             status : 'success',
@@ -38,7 +38,7 @@ const getHistory = async(req, res) => {
     } catch (error) {
         res.status(500).json({
             status: "fail",
-            error: error,
+            error: error.message,
           });
     }
 }
@@ -47,13 +47,15 @@ const createHistory = async (req, res) => {
     try {
         const {score, user_game_id} = req.body;
 
+        if(!user_game_id) throw Error('user_game_id is required');
+
         const user = await User.findOne({
             where : {
                 id : user_game_id
             }
         });
 
-        if(! user) throw `User with id ${user_game_id} doesnt exist`;
+        if(! user) throw Error(`User with id ${user_game_id} doesnt exist`);
 
         history = await History.create({
             score, user_game_id
@@ -67,7 +69,7 @@ const createHistory = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             status: "fail",
-            error,
+            error : error.message,
           });
     }
 }
@@ -83,7 +85,7 @@ const updateHistory = async(req, res) => {
             }
         });
 
-        if(! user) throw `User with id ${user_game_id} doesnt exist`;
+        if(! user) throw Error(`User with id ${user_game_id} doesnt exist`);
 
         const updated = await History.update({
             score
@@ -94,7 +96,7 @@ const updateHistory = async(req, res) => {
             }
         });
 
-        if(updated == 0) throw `failed to update history with id ${id} for user ${user.username}`;
+        if(updated == 0) throw Error(`failed to update history with id ${id} for user ${user.username}`);
 
         return res.status(200).json({
             status : "success",
@@ -105,7 +107,7 @@ const updateHistory = async(req, res) => {
     } catch (error) {
         res.status(500).json({
             status: "fail",
-            error: error,
+            error: error.message,
           });
     }
 }
@@ -119,7 +121,7 @@ const deleteHistory = async (req, res) => {
             }
         });
 
-        if(deleted == 0) throw `failed to delete history with id ${id}`;
+        if(deleted == 0) throw Error(`failed to delete history with id ${id}`);
 
         return res.status(200).json({
             status : 'success',
@@ -130,7 +132,7 @@ const deleteHistory = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             status: "fail",
-            error: error,
+            error: error.message,
           });
     }
 }
